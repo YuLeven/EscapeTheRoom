@@ -12,6 +12,20 @@ class ESCAPETHEROOM_API UOpenDoor : public UActorComponent
 {
 	GENERATED_BODY()
 
+public:
+	// Sets default values for this component's properties
+	UOpenDoor();
+
+	// Called every frame
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+protected:
+	// Called when the game starts
+	virtual void BeginPlay() override;
+
+	//Function to open the door if possible
+	void OpenDoor();
+
 private:
 
 	//The angle to open the door
@@ -27,23 +41,6 @@ private:
 	class AActor* ActorToTriggerPressurePlate;
 
 	//Helper function to termine if the door is alredy open
-	FORCEINLINE bool IsDoorOpen(FRotator Rotator) const { return Rotator.Yaw > 0; };
-
-public:	
-	// Sets default values for this component's properties
-	UOpenDoor();
-
-protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
-
-	//Function to open the door if possible
-	void OpenDoor();
-
-public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
-		
+	FORCEINLINE bool IsDoorOpen(const FRotator Rotator) const { return Rotator.Yaw > 0; };
 	
 };
