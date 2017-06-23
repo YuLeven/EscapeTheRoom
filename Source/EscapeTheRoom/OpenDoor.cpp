@@ -25,15 +25,15 @@ void UOpenDoor::BeginPlay()
 {
 	Super::BeginPlay();
 
+	//Gets the player pawn and sets the ActorToTriggerPressurePlate property to a cast of it to AActor
 	APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(this, 0);
 	AActor* ActorToTriggerPressurePlate = Cast<AActor>(PlayerPawn);
-
-	// ...
 
 }
 
 void UOpenDoor::OpenDoor()
 {
+	//Gets the owner (the chair) and, if not already open, opens it
 	AActor* Owner = GetOwner();
 	if (Owner)
 	{
@@ -43,10 +43,6 @@ void UOpenDoor::OpenDoor()
 			Owner->SetActorRotation(Rotator);
 		}
 	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Rotator is undefined"));
-	}
 }
 
 
@@ -55,13 +51,10 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-
-	
+	//Opens the door if the trigger actor (the player) is overlapping the pressure plate
 	if (ActorToTriggerPressurePlate && PressurePlate->IsOverlappingActor(ActorToTriggerPressurePlate))
 	{
 		OpenDoor();
 	}
-
-	// ...
 }
 
