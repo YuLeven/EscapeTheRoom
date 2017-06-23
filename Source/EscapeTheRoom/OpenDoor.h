@@ -27,7 +27,7 @@ private:
 	class AActor* ActorToTriggerPressurePlate;
 
 	//Helper function to termine if the door is alredy open
-	FORCEINLINE bool IsDoorOpen(FRotator Rotator) { return Rotator.Yaw > 0; };
+	FORCEINLINE bool IsDoorOpen(FRotator Rotator) const { return Rotator.Yaw > 0; };
 
 public:	
 	// Sets default values for this component's properties
