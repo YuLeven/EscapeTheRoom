@@ -26,8 +26,7 @@ void UOpenDoor::BeginPlay()
 	Super::BeginPlay();
 
 	//Gets the player pawn and sets the ActorToTriggerPressurePlate property to a cast of it to AActor
-	APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(this, 0);
-	AActor* ActorToTriggerPressurePlate = Cast<AActor>(PlayerPawn);
+	ActorToTriggerPressurePlate = UGameplayStatics::GetPlayerPawn(this, 0);
 
 }
 
