@@ -40,13 +40,13 @@ void UOpenDoor::YawDoor(float NewYaw)
 	}
 }
 
-//Opens the door by setting it's yaw to the value set by either the class or the GD on the editor
+//Opens the door by setting it's yaw value to the value set by either the class or the GD on the editor
 void UOpenDoor::OpenDoor()
 {
 	YawDoor(OpenAngle);
 }
 
-//Closes the door by settings it's yaw to zero
+//Closes the door by settings it's yaw value to zero
 void UOpenDoor::CloseDoor()
 {
 	YawDoor(0.f);
@@ -66,9 +66,8 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 		OpenDoor();
 		LastDoorOpenTime = CurrentTime;
 	}
-
 	//Check if it's time to close the door
-	if (LastDoorOpenTime && (CurrentTime - LastDoorOpenTime) >= DoorCloseDelay)
+	else if (LastDoorOpenTime && (CurrentTime - LastDoorOpenTime) >= DoorCloseDelay)
 	{
 		CloseDoor();
 	}
