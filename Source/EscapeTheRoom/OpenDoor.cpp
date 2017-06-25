@@ -16,7 +16,9 @@ UOpenDoor::UOpenDoor()
 
 	//Sets the angle of opening of the door
 	OpenAngle = -90.f;
-	// ...
+	
+	//The time to be elapse until the door is automatically closed
+	DoorCloseDelay = 0.8f;
 }
 
 
@@ -27,21 +29,27 @@ void UOpenDoor::BeginPlay()
 
 	//Gets the player pawn and sets the ActorToTriggerPressurePlate property to a cast of it to AActor
 	ActorToTriggerPressurePlate = UGameplayStatics::GetPlayerPawn(this, 0);
-
+	OwningActor = GetOwner();
 }
 
+void UOpenDoor::YawDoor(float NewYaw)
+{
+	if (OwningActor)
+	{
+		OwningActor->SetActorRotation(FRotator(0.f, NewYaw, 0.f));
+	}
+}
+
+//Opens the door by setting it's yaw to the value set by either the class or the GD on the editor
 void UOpenDoor::OpenDoor()
 {
-	//Gets the owner (the chair) and, if not already open, opens it
-	AActor* Owner = GetOwner();
-	if (Owner)
-	{
-		if (!IsDoorOpen(Owner->GetActorRotation()))
-		{
-			FRotator Rotator = FRotator(0.f, OpenAngle, 0.f);
-			Owner->SetActorRotation(Rotator);
-		}
-	}
+	YawDoor(OpenAngle);
+}
+
+//Closes the door by settings it's yaw to zero
+void UOpenDoor::CloseDoor()
+{
+	YawDoor(0.f);
 }
 
 
@@ -50,10 +58,20 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	float CurrentTime = GetWorld()->GetTimeSeconds();
+
 	//Opens the door if the trigger actor (the player) is overlapping the pressure plate
 	if (ActorToTriggerPressurePlate && PressurePlate->IsOverlappingActor(ActorToTriggerPressurePlate))
 	{
 		OpenDoor();
+		LastDoorOpenTime = CurrentTime;
 	}
+
+	//Check if it's time to close the door
+	if (LastDoorOpenTime && (CurrentTime - LastDoorOpenTime) >= DoorCloseDelay)
+	{
+		CloseDoor();
+	}
+
 }
 

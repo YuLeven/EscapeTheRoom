@@ -23,10 +23,15 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-	//Function to open the door if possible
+	//Function to open the door
 	void OpenDoor();
 
+	//Function to close the door
+	void CloseDoor();
+
 private:
+
+	void YawDoor(float NewYaw);
 
 	//The angle to open the door
 	UPROPERTY(VisibleAnywhere, Category = "Doors")
@@ -42,5 +47,13 @@ private:
 
 	//Helper function to termine if the door is alredy open
 	FORCEINLINE bool IsDoorOpen(const FRotator Rotator) const { return Rotator.Yaw > 0; };
+
+	UPROPERTY(EditAnywhere)
+	float DoorCloseDelay;
+
+	UPROPERTY()
+	float LastDoorOpenTime;
+
+	class AActor* OwningActor;
 	
 };
