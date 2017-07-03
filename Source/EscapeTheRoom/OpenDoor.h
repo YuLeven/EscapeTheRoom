@@ -54,6 +54,7 @@ private:
 	UPROPERTY()
 	float LastDoorOpenTime;
 
+	UPROPERTY()
 	class AActor* OwningActor;
 	
 };
