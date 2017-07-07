@@ -29,6 +29,6 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Grabbing")
 	float Reach;
 
-		
+	class UPhysicsHandleComponent* PhysicsHandle;
 	
 };
