@@ -35,4 +35,7 @@ private:
 
 	//Ray cast and grab what's in range
 	void Grab();
+
+	//Releases the grabbed object if any
+	void Release();
 };
