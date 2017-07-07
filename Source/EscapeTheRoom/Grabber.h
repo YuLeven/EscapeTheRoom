@@ -30,5 +30,9 @@ private:
 	float Reach;
 
 	class UPhysicsHandleComponent* PhysicsHandle;
-	
+
+	class UInputComponent* InputComponent;
+
+	//Ray cast and grab what's in range
+	void Grab();
 };
