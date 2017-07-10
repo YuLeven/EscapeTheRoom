@@ -17,8 +17,6 @@ UGrabber::UGrabber()
 
 	//The distance which the player can grab stuff
 	Reach = 100.f;
-
-	// ...
 }
 
 
@@ -27,18 +25,13 @@ void UGrabber::BeginPlay()
 {
 	Super::BeginPlay();
 
-	/// Look for attached Physics Handle
-	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
+	FindPhysicsHandle();
 
-	if (PhysicsHandle)
-	{
+	SetupInputComponent();	
+}
 
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("The Physics Handle could not be found in %s"), *GetOwner()->GetName());
-	}
-
+void UGrabber::SetupInputComponent()
+{
 	/// Look for the attached Input Component
 	InputComponent = GetOwner()->FindComponentByClass<UInputComponent>();
 
@@ -52,50 +45,56 @@ void UGrabber::BeginPlay()
 	{
 		UE_LOG(LogTemp, Error, TEXT("The Input Component could not be found in %s"), *GetOwner()->GetName());
 	}
-	
+}
+
+void UGrabber::FindPhysicsHandle()
+{
+	/// Look for attached Physics Handle
+	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
+
+	if (PhysicsHandle)
+	{
+
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("The Physics Handle could not be found in %s"), *GetOwner()->GetName());
+	}
 }
 
 void UGrabber::Grab()
 {
+	FHitResult HitResult = GetFirstPhysicsBodyInReach();
 	UE_LOG(LogTemp, Warning, TEXT("Grab was called"));
+
+	AActor* HitActor = HitResult.GetActor();
+
+	if (HitActor)
+	{
+		FString ActorName = HitActor->GetName();
+		UE_LOG(LogTemp, Warning, TEXT("Ray-cast hit: %s"), *ActorName);
+		PhysicsHandle->GrabComponent(HitActor->GetRootPrimitiveComponent(), EName::NAME_None, HitActor->GetActorLocation(), true);
+	}
 }
 
 void UGrabber::Release()
 {
 	UE_LOG(LogTemp, Warning, TEXT("The user has release the key"));
+	PhysicsHandle->ReleaseComponent();
 }
 
-
-// Called every frame
-void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+FHitResult UGrabber::GetFirstPhysicsBodyInReach() const
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
 	FVector PlayerViewPointLocation = FVector();
 	FRotator PlayerViewPointRotation = FRotator();
 
 	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(
-		OUT PlayerViewPointLocation, 
+		OUT PlayerViewPointLocation,
 		OUT PlayerViewPointRotation
 	);
 
-	//UE_LOG(LogTemp, Warning, TEXT("Location: %s, Rotation: %s"), 
-	//	*PlayerViewPointLocation.ToString(),
-	//	*PlayerViewPointRotation.ToString()
-	//);
-
 	/// Draw a red trace in the world to visualize
 	FVector LineTraceEnd = PlayerViewPointLocation + PlayerViewPointRotation.Vector() * Reach;
-	DrawDebugLine(
-		GetWorld(),
-		PlayerViewPointLocation,
-		LineTraceEnd,
-		FColor(255, 0, 0),
-		false,
-		0.f,
-		0.f,
-		10.f
-	);
 
 	/// Setup query parameters
 	FCollisionQueryParams TraceParameters(FName(TEXT("")), false, GetOwner());
@@ -111,15 +110,28 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 		TraceParameters
 	);
 
-	AActor* HitActor = LineTraceHit.GetActor();
+	return LineTraceHit;
+}
 
-	if (HitActor)
+// Called every frame
+void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	if (PhysicsHandle->GetGrabbedComponent())
 	{
-		FString ActorName = HitActor->GetName();
-		UE_LOG(LogTemp, Warning, TEXT("Ray-cast hit: %s"), *ActorName);
-	}
-	
+		FVector PlayerViewPointLocation = FVector();
+		FRotator PlayerViewPointRotation = FRotator();
 
-	
+		GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(
+			OUT PlayerViewPointLocation,
+			OUT PlayerViewPointRotation
+		);
+
+		/// Draw a red trace in the world to visualize
+		FVector LineTraceEnd = PlayerViewPointLocation + PlayerViewPointRotation.Vector() * Reach;
+
+		PhysicsHandle->SetTargetLocation(LineTraceEnd);
+	}
 }
 
