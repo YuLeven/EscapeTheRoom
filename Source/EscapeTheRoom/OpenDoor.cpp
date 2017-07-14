@@ -62,7 +62,7 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	float CurrentTime = GetWorld()->GetTimeSeconds();
-	float TotalMass = GetOverlappingActorsMass();
+	float TotalMass = GetTotalMassOfActorsOnPressureTrigger();
 
 	//Opens the door if the trigger actor (the player) is overlapping the pressure plate
 	if (TotalMass > MassToOpenDoor)
@@ -78,7 +78,7 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 
 }
 
-float UOpenDoor::GetOverlappingActorsMass()
+float UOpenDoor::GetTotalMassOfActorsOnPressureTrigger()
 {
 	TArray<AActor*> OverlappingActors;
 	PressurePlate->GetOverlappingActors(OverlappingActors);

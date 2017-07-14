@@ -33,7 +33,7 @@ private:
 
 	void YawDoor(float NewYaw);
 
-	float GetOverlappingActorsMass();
+	float GetTotalMassOfActorsOnPressureTrigger();
 
 	//The angle to open the door
 	UPROPERTY(VisibleAnywhere, Category = "Doors")
