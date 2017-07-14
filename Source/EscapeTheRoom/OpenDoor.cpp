@@ -4,6 +4,7 @@
 #include "GameFramework/Actor.h"
 #include "GameFramework/Character.h"
 #include "Runtime/Engine/Classes/Engine/TriggerVolume.h"
+#include "Runtime/Engine/Classes/Components/PrimitiveComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 
@@ -19,6 +20,9 @@ UOpenDoor::UOpenDoor()
 	
 	//The time to be elapse until the door is automatically closed
 	DoorCloseDelay = 0.8f;
+
+	//The base mass to open the door
+	MassToOpenDoor = 20.f;
 }
 
 
@@ -28,7 +32,6 @@ void UOpenDoor::BeginPlay()
 	Super::BeginPlay();
 
 	//Gets the player pawn and sets the ActorToTriggerPressurePlate property to a cast of it to AActor
-	ActorToTriggerPressurePlate = UGameplayStatics::GetPlayerPawn(this, 0);
 	OwningActor = GetOwner();
 }
 
@@ -59,9 +62,10 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	float CurrentTime = GetWorld()->GetTimeSeconds();
+	float TotalMass = GetOverlappingActorsMass();
 
 	//Opens the door if the trigger actor (the player) is overlapping the pressure plate
-	if (ActorToTriggerPressurePlate && PressurePlate->IsOverlappingActor(ActorToTriggerPressurePlate))
+	if (TotalMass > MassToOpenDoor)
 	{
 		OpenDoor();
 		LastDoorOpenTime = CurrentTime;
@@ -72,5 +76,25 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 		CloseDoor();
 	}
 
+}
+
+float UOpenDoor::GetOverlappingActorsMass()
+{
+	TArray<AActor*> OverlappingActors;
+	PressurePlate->GetOverlappingActors(OverlappingActors);
+	float TotalMass = 0.f;
+
+	for (AActor* OverlappingActor : OverlappingActors)
+	{
+		UPrimitiveComponent* ActorPrimitive = Cast<UPrimitiveComponent>(OverlappingActor->GetRootComponent());
+
+		if (ActorPrimitive)
+		{
+			TotalMass += ActorPrimitive->GetMass();
+		}
+
+	}
+
+	return TotalMass;
 }
 
