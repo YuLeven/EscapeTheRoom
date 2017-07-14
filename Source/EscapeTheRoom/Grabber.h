@@ -6,7 +6,6 @@
 #include "Components/ActorComponent.h"
 #include "Grabber.generated.h"
 
-
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class ESCAPETHEROOM_API UGrabber : public UActorComponent
 {
@@ -45,5 +44,12 @@ private:
 	//Finds the physics handle component and attaches the "Grab" event to it
 	void FindPhysicsHandle();
 
+	//Gets the player reach line trace end
+	FVector GetPlayerReachLineTraceEnd() const;
+
+	FVector GetPlayerReachLineTraceStart() const;
+
 	FHitResult GetFirstPhysicsBodyInReach() const;
 };
+
+
