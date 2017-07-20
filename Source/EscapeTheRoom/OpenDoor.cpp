@@ -84,7 +84,7 @@ float UOpenDoor::GetTotalMassOfActorsOnPressureTrigger()
 	PressurePlate->GetOverlappingActors(OverlappingActors);
 	float TotalMass = 0.f;
 
-	for (AActor* OverlappingActor : OverlappingActors)
+	for (const AActor* OverlappingActor : OverlappingActors)
 	{
 		UPrimitiveComponent* ActorPrimitive = Cast<UPrimitiveComponent>(OverlappingActor->GetRootComponent());
 
