@@ -80,6 +80,12 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 
 float UOpenDoor::GetTotalMassOfActorsOnPressureTrigger()
 {
+	if (PressurePlate == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Pressure plate is missing on door %s"), *GetOwner()->GetName())
+		return 0.f;
+	}
+
 	TArray<AActor*> OverlappingActors;
 	PressurePlate->GetOverlappingActors(OverlappingActors);
 	float TotalMass = 0.f;
