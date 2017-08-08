@@ -46,7 +46,8 @@ void UOpenDoor::YawDoor(float NewYaw)
 //Opens the door by setting it's yaw value to the value set by either the class or the GD on the editor
 void UOpenDoor::OpenDoor()
 {
-	YawDoor(OpenAngle);
+	//YawDoor(OpenAngle);
+	OnOpenRequest.Broadcast();
 }
 
 //Closes the door by settings it's yaw value to zero
