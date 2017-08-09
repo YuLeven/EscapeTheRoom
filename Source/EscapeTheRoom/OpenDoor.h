@@ -7,6 +7,7 @@
 #include "OpenDoor.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnOpenRequest);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCloseRequest);
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -24,6 +25,9 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnOpenRequest OnOpenRequest;
 
+	UPROPERTY(BlueprintAssignable)
+	FOnCloseRequest OnCloseRequest;
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -40,10 +44,6 @@ private:
 
 	float GetTotalMassOfActorsOnPressureTrigger();
 
-	//The angle to open the door
-	UPROPERTY(VisibleAnywhere, Category = "Doors")
-	float OpenAngle;
-
 	UPROPERTY(EditAnywhere, Category = "Doors")
 	float MassToOpenDoor;
 
@@ -53,12 +53,6 @@ private:
 
 	//Helper function to termine if the door is alredy open
 	FORCEINLINE bool IsDoorOpen(const FRotator Rotator) const { return Rotator.Yaw > 0; };
-
-	UPROPERTY(EditAnywhere)
-	float DoorCloseDelay;
-
-	UPROPERTY()
-	float LastDoorOpenTime;
 
 	UPROPERTY()
 	class AActor* OwningActor;

@@ -15,12 +15,6 @@ UOpenDoor::UOpenDoor()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
-	//Sets the angle of opening of the door
-	OpenAngle = -90.f;
-	
-	//The time to be elapse until the door is automatically closed
-	DoorCloseDelay = 0.8f;
-
 	//The base mass to open the door
 	MassToOpenDoor = 20.f;
 }
@@ -46,14 +40,13 @@ void UOpenDoor::YawDoor(float NewYaw)
 //Opens the door by setting it's yaw value to the value set by either the class or the GD on the editor
 void UOpenDoor::OpenDoor()
 {
-	//YawDoor(OpenAngle);
 	OnOpenRequest.Broadcast();
 }
 
 //Closes the door by settings it's yaw value to zero
 void UOpenDoor::CloseDoor()
 {
-	YawDoor(0.f);
+	OnCloseRequest.Broadcast();
 }
 
 
@@ -67,15 +60,9 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 
 	//Opens the door if the trigger actor (the player) is overlapping the pressure plate
 	if (TotalMass > MassToOpenDoor)
-	{
 		OpenDoor();
-		LastDoorOpenTime = CurrentTime;
-	}
-	//Check if it's time to close the door
-	else if (LastDoorOpenTime && (CurrentTime - LastDoorOpenTime) >= DoorCloseDelay)
-	{
+	else
 		CloseDoor();
-	}
 
 }
 
