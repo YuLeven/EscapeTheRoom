@@ -32,12 +32,6 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-	//Function to open the door
-	void OpenDoor();
-
-	//Function to close the door
-	void CloseDoor();
-
 private:
 
 	void YawDoor(float NewYaw);

@@ -37,19 +37,6 @@ void UOpenDoor::YawDoor(float NewYaw)
 	}
 }
 
-//Opens the door by setting it's yaw value to the value set by either the class or the GD on the editor
-void UOpenDoor::OpenDoor()
-{
-	OnOpenRequest.Broadcast();
-}
-
-//Closes the door by settings it's yaw value to zero
-void UOpenDoor::CloseDoor()
-{
-	OnCloseRequest.Broadcast();
-}
-
-
 // Called every frame
 void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
@@ -60,9 +47,9 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 
 	//Opens the door if the trigger actor (the player) is overlapping the pressure plate
 	if (TotalMass > MassToOpenDoor)
-		OpenDoor();
+		OnOpenRequest.Broadcast();
 	else
-		CloseDoor();
+		OnCloseRequest.Broadcast();
 
 }
 
